@@ -89,7 +89,7 @@ import 'primeicons/primeicons.css'
           <SimpleDraggable :initialItems="initialItems" ref="listRef" @item-selected="setSelectedItem"  @items-updated="onItemsUpdated" @item-deleted="onItemDeleted" />
         </div>
         <div v-if="displayMode === 'teacher'" class="flex flex-col flex-1 gap-2 max-h-[200px] overflow-y-auto ">
-          <div v-if="!deletedItems.length" class="text-sm text-gray-500 font-bold">Papierkorb</div>
+          <div v-if="!deletedItems.length" class="text-sm text-gray-500 font-bold">Papierkorb ist leer</div>
           <ListItem
             class="rounded-md bg-red-200"
             v-if="deletedItems.length"
