@@ -69,6 +69,19 @@ button:focus-visible {
   text-align: center;
 }
 
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('assets/UbuntuMono-Regular.ttf') format('truetype');
+}
+
+.font-ubuntu {
+  font-family: 'Ubuntu', monospace;
+  letter-spacing: 0.2rem;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
