@@ -94,11 +94,11 @@ import 'primeicons/primeicons.css'
   <div class="flex flex-col items-center justify-center bg-gray-100 p-4 mb-4">
     <div class="text-sm text-gray-500 mb-2">Debug: {{ refDebugIbMsg }}</div>
   </div>
-  <div class="flex gap-8 max-h-[600px] text-base font-ubuntu">
+  <div class="flex gap-8 max-h-[600px] text-base">
     <div class="min-w-[450px] flex flex-col gap-2">
       <div class="flex gap-2 items-start">
         <div class="max-h-[200px] overflow-y-auto flex-1">
-          <SimpleDraggable :initialItems="initialItems" ref="listRef" @item-selected="setSelectedItem"  @items-updated="onItemsUpdated" @item-deleted="onItemDeleted" />
+          <SimpleDraggable :initialItems="initialItems" ref="listRef" @item-selected="setSelectedItem"  @items-updated="onItemsUpdated" @item-deleted="onItemDeleted" class="font-ubuntu" />
         </div>
         <div v-if="displayMode === 'teacher'" class="flex flex-col flex-1 gap-2 max-h-[200px] overflow-y-auto ">
           <div v-if="!deletedItems.length" class="text-sm text-gray-500 font-bold">Papierkorb ist leer</div>
@@ -112,14 +112,14 @@ import 'primeicons/primeicons.css'
         </div>
       </div>
       <!-- <input v-model="newItem" @keyup.enter="addItem()" placeholder="Add new item" /> -->
-      <FakeInput ref="fakeInputComponent" :content="inputRef" @save="addItem" />
+      <FakeInput ref="fakeInputComponent" :content="inputRef" @save="addItem" class="font-ubuntu" />
 
       <!-- trashbin -->
       <draggable 
         v-model="deletedItems"
         @change="onItemsUpdated"
         group="math"
-        class="list-none flex flex-col items-center justify-center min-h-16 w-full pt-2 border-2 border-dashed border-red-400 bg-red-50 rounded transition-colors"
+        class="font-ubuntu list-none flex flex-col items-center justify-center min-h-16 w-full pt-2 border-2 border-dashed border-red-400 bg-red-50 rounded transition-colors"
         item-key="id">
           <template #item="{element, index}">
               <div v-show="false" :id="`item-${index}`">{{ index }}</div>
