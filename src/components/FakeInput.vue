@@ -80,8 +80,8 @@ defineExpose({ sendChar, moveCursorNext, moveCursorPrev, backspace })
     <div class="flex-1 font-bold text-left select-none">
       <span v-html="rendered" />
     </div>
-    <div @click="save" class="rounded-full bg-accent1 text-white h-6 w-6 flex items-center justify-center cursor-pointer text-center pt-1 pr-1 rotate-45">
+    <button @click="save" :disabled="value.length<3" class="rounded-full bg-accent1 text-white h-6 w-6 flex items-center justify-center cursor-pointer text-center pt-1 pr-1 rotate-45 disabled:opacity-50 disabled:cursor-not-allowed">
       <i class="pi pi-send text-sm"></i>
-    </div>
+    </button>
   </div>
 </template>
