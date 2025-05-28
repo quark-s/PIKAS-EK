@@ -121,33 +121,33 @@
 <template>
     <div ref="scrollContainer" class="overflow-auto max-h-96">
         <draggable 
-        v-model="itemsNormalized"
-        :animation="200"
-        group="math"
-        tag="ul"
-        @start="isDragging=true"
-        @end="isDragging=false"
-        class="list-group p-0"
-        :class="{'dragging': isDragging}"
-        ghost-class="ghost"
-        item-key="id">
-            <template #item="{element, index}">
-                <li :id="`item-${element.id}`" :ref="el => elements[index] = el" class="mb-2">
-                    <ListItem
-                        class="rounded-md"
-                        :content="element.content"
-                        :isDeletable="true"
-                        :isMovable="true"
-                        @move-up="moveUp(index)"
-                        @move-down="moveDown(index)"
-                        @delete="deleteItem(index)"
-                        @item-selected="$emit('item-selected', element)"
-                        :isLast="index === itemsNormalized.length - 1"
-                        :isFirst="index === 0"
-                    />
-                    <!-- <span class="transition-colors, duration-500, bg-red-200">test</span> -->
-                </li>
-            </template>
+            v-model="itemsNormalized"
+            :animation="200"
+            group="math"
+            tag="ul"
+            @start="isDragging=true"
+            @end="isDragging=false"
+            class="list-group p-0 list-style-none"
+            :class="{'dragging': isDragging}"
+            ghost-class="ghost"
+            item-key="id">
+                <template #item="{element, index}">
+                    <li :id="`item-${element.id}`" :ref="el => elements[index] = el" class="mb-2">
+                        <ListItem
+                            class="rounded-md"
+                            :content="element.content"
+                            :isDeletable="true"
+                            :isMovable="true"
+                            @move-up="moveUp(index)"
+                            @move-down="moveDown(index)"
+                            @delete="deleteItem(index)"
+                            @item-selected="$emit('item-selected', element)"
+                            :isLast="index === itemsNormalized.length - 1"
+                            :isFirst="index === 0"
+                        />
+                        <!-- <span class="transition-colors, duration-500, bg-red-200">test</span> -->
+                    </li>
+                </template>
         </draggable>
     </div>
 </template>
@@ -162,11 +162,11 @@
     }
 
     .flip-list-move {
-    transition: transform 0.5s;
+        transition: transform 0.5s;
     }
 
     .no-move {
-    transition: transform 0s;
+        transition: transform 0s;
     }
 
     .ghost {

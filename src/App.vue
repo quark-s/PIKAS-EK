@@ -25,6 +25,7 @@ import 'primeicons/primeicons.css'
   let deletedItems = ref([])
   let displayMode = ref('student') // 'student' or 'teacher'
   let refDebugIbMsg = ref('');
+  let isTrashbinActive = ref(false)
 
   const addItem = (inputValue) => {
     if (inputValue.trim() === '') {
@@ -116,14 +117,17 @@ import 'primeicons/primeicons.css'
       <!-- trashbin -->
       <draggable 
         v-model="deletedItems"
-        group="math" 
-        class="flex items-center justify-center h-16 w-full border-2 border-dashed border-red-400 bg-red-50 rounded transition-colors"
+        @change="onItemsUpdated"
+        group="math"
+        class="list-none flex flex-col items-center justify-center min-h-16 w-full pt-2 border-2 border-dashed border-red-400 bg-red-50 rounded transition-colors"
         item-key="id">
           <template #item="{element, index}">
               <div v-show="false" :id="`item-${index}`">{{ index }}</div>
           </template>
           <template #footer>
-            <div class="text-red-400 flex flex-col items-center">
+            <div
+              class="text-red-400 absolute rounded-full bg-red-50 "
+            >
               <i class="pi pi-trash text-2xl"></i>
             </div>
           </template>          
@@ -138,17 +142,13 @@ import 'primeicons/primeicons.css'
 
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+<style>
+  .sortable-chosen {
+    z-index: 50 !important;
+    position: relative;
+  }
+  .sortable-ghost {
+    z-index: 40 !important;
+    position: relative;
+  }
 </style>
