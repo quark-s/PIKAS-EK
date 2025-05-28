@@ -15,7 +15,6 @@ import 'primeicons/primeicons.css'
     { content: '2+4', id: 1 },
     { content: '8-3', id: 2 },
     { content: '9+4', id: 3 },
-    { content: '5-1', id: 4 },
   ])
 
   const listRef = ref(null)
@@ -94,7 +93,7 @@ import 'primeicons/primeicons.css'
   <div class="flex flex-col items-center justify-center bg-gray-100 p-4 mb-4">
     <div class="text-sm text-gray-500 mb-2">Debug: {{ refDebugIbMsg }}</div>
   </div>
-  <div class="flex gap-8 max-h-[600px]">
+  <div class="flex gap-8 max-h-[600px] text-base">
     <div class="min-w-[450px] flex flex-col gap-2">
       <div class="flex gap-2 items-start">
         <div class="max-h-[200px] overflow-y-auto flex-1">
@@ -129,8 +128,6 @@ import 'primeicons/primeicons.css'
             </div>
           </template>          
       </draggable>
-
-
       
     </div>
     <div>

@@ -40,12 +40,14 @@
             <div class="h-8 w-8"></div>
             <div @click="emit('button-pressed', 'btn_0')" class="bg-white rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer">0</div>
             <div @click="emit('button-pressed', 'btn_backspace')" class="bg-red-400 rounded-md text-white font-bold h-8 w-8 flex items-center justify-center border border-white cursor-pointer"><i class="pi pi-delete-left"></i></div>
+
             <div @click="emit('button-pressed', 'btn_plus')" class="bg-white rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer">+</div>
             <div @click="emit('button-pressed', 'btn_minus')" class="bg-white rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer">-</div>
             <div @click="emit('button-pressed', 'btn_result')" class="bg-white rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer">=</div>
-            <div @click="emit('button-pressed', 'btn_left')" class="bg-white rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer"><</div>
+
+            <div @click="emit('button-pressed', 'btn_left')" class="bg-yellow-300 rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer"><i class="pi pi-chevron-left"></i></div>
             <div class="h-8 w-8"></div>
-            <div @click="emit('button-pressed', 'btn_right')" class="bg-white rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer">></div>
+            <div @click="emit('button-pressed', 'btn_right')" class="bg-yellow-300 rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer"><i class="pi pi-chevron-right"></i></div>
           </div>
           <div v-if="devmode" class="flex gap-2 text-sm">
             <div @click="toggleMode" class=" flex-1 bg-accent1 rounded-md p-2 text-white font-bold h-8 flex items-center justify-center cursor-pointer">mode: {{ displayMode }}</div>

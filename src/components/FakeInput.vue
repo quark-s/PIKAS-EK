@@ -28,7 +28,7 @@ const rendered = computed(() => {
         return value.value // Fallback to original value if cursor is out of bounds
     }
     // Insert cursor span at the current cursor position    
-    chars.splice(cursor.value, 1, '<span class="border-b-4 border-accent2 text-accent2 animate-pulse">'+ (value.value[cursor.value] ? value.value[cursor.value] : '&nbsp;&nbsp;') +'</span>')
+    chars.splice(cursor.value, 1, '<span class="border-b-4 border-purple-600 text-accent1 animate-pulse">'+ (value.value[cursor.value] ? value.value[cursor.value] : '&nbsp;&nbsp;') +'</span>')
     return chars.join('')
 })
 
