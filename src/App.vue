@@ -22,15 +22,16 @@ import 'primeicons/primeicons.css'
   // const newItem = ref('')
   const selectedItem = ref(null)
   let inputRef = ref('1+2')
+  let fakeInputComponent = ref(null)
   let deletedItems = ref([])
   let displayMode = ref('student') // 'student' or 'teacher'
   let refDebugIbMsg = ref('');
 
-  const addItem = () => {
-    if (inputRef.value.trim() === '') {
+  const addItem = (inputValue) => {
+    if (inputValue.trim() === '') {
       return
     }
-    listRef.value.addItem({ content: inputRef.value })
+    listRef.value.addItem({ content: inputValue })
   }
 
   const setSelectedItem = (item) => {
@@ -52,17 +53,28 @@ import 'primeicons/primeicons.css'
     if(e.includes('btn_')){
       const btn = e.split('_')[1]
       if(btn.includes('backspace')){
-        inputRef.value = inputRef.value.slice(0, -1)
+        // inputRef.value = inputRef.value.slice(0, -1)
+        fakeInputComponent.value.backspace()
       } else if(btn.includes('clear')){
         inputRef.value = ''
       } else if(btn.includes('result')){
-        inputRef.value = inputRef.value + '='
+        // inputRef.value = inputRef.value + '='
+        fakeInputComponent.value.sendChar('=')
       } else if(btn.includes('plus')){
-        inputRef.value = inputRef.value + '+'
+        // inputRef.value = inputRef.value + '+'
+        fakeInputComponent.value.sendChar('+')
       } else if(btn.includes('minus')){
-        inputRef.value = inputRef.value + '-'
-      } else {
-        inputRef.value = inputRef.value + ''+btn
+        // inputRef.value = inputRef.value + '-'
+        fakeInputComponent.value.sendChar('-')
+      } 
+      else if(btn.includes('right')) {
+        fakeInputComponent.value.moveCursorNext()
+      } else if(btn.includes('left')) {
+        fakeInputComponent.value.moveCursorPrev()
+      } 
+      else {
+        // inputRef.value = inputRef.value + ''+btn
+        fakeInputComponent.value.sendChar(btn)
       }
     }
     else if(e.includes('show_')) {
@@ -100,7 +112,7 @@ import 'primeicons/primeicons.css'
         </div>
       </div>
       <!-- <input v-model="newItem" @keyup.enter="addItem()" placeholder="Add new item" /> -->
-      <FakeInput :content="inputRef" @save="addItem()" />
+      <FakeInput ref="fakeInputComponent" :content="inputRef" @save="addItem" />
 
       <!-- trashbin -->
       <draggable 

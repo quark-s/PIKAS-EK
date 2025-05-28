@@ -43,6 +43,9 @@
             <div @click="emit('button-pressed', 'btn_plus')" class="bg-white rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer">+</div>
             <div @click="emit('button-pressed', 'btn_minus')" class="bg-white rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer">-</div>
             <div @click="emit('button-pressed', 'btn_result')" class="bg-white rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer">=</div>
+            <div @click="emit('button-pressed', 'btn_left')" class="bg-white rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer"><</div>
+            <div class="h-8 w-8"></div>
+            <div @click="emit('button-pressed', 'btn_right')" class="bg-white rounded-md text-black font-bold h-8 w-8 flex items-center justify-center cursor-pointer">></div>
           </div>
           <div v-if="devmode" class="flex gap-2 text-sm">
             <div @click="toggleMode" class=" flex-1 bg-accent1 rounded-md p-2 text-white font-bold h-8 flex items-center justify-center cursor-pointer">mode: {{ displayMode }}</div>
