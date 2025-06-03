@@ -132,15 +132,10 @@
             ghost-class="ghost"
             item-key="id">
                 <template #item="{element, index}">
-                    <li :id="`item-${element.id}`" :ref="el => elements[index] = el" class="mb-2">
+                    <li :id="`item-${element.id}`" :ref="el => elements[index] = el" class="mb-2 cursor-move w-full z-10">
                         <ListItem
                             class="rounded-md"
                             :content="element.content"
-                            :isDeletable="true"
-                            :isMovable="true"
-                            @move-up="moveUp(index)"
-                            @move-down="moveDown(index)"
-                            @delete="deleteItem(index)"
                             @item-selected="$emit('item-selected', element)"
                             :isLast="index === itemsNormalized.length - 1"
                             :isFirst="index === 0"
@@ -151,6 +146,14 @@
         </draggable>
     </div>
 </template>
+
+<!--
+                            :isDeletable="true"
+                            :isMovable="true"
+                            @move-up="moveUp(index)"
+                            @move-down="moveDown(index)"
+                            @delete="deleteItem(index)"
+-->
 
 <style scoped>
     .list-item {

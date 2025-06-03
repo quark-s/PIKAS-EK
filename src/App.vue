@@ -25,7 +25,12 @@ import 'primeicons/primeicons.css'
   let deletedItems = ref([])
   let displayMode = ref('student') // 'student' or 'teacher'
   let refDebugIbMsg = ref('');
+  let isDragging = ref(false);
+
   let isTrashbinActive = ref(false)
+
+  // Track hidden items by id
+  const hiddenDeletedIds = ref([])
 
   const addItem = (inputValue) => {
     if (inputValue.trim() === '') {
@@ -88,6 +93,23 @@ import 'primeicons/primeicons.css'
     } 
   }
 
+function onTrashbinAdd(evt) {
+  // Move the last added item to the end
+  if (deletedItems.value.length > 1) {
+    const [item] = deletedItems.value.splice(evt.newDraggableIndex, 1)
+    deletedItems.value.push(item)
+    // Hide after 5 seconds
+    setTimeout(() => {
+      hiddenDeletedIds.value.push(item.id)
+    }, 5000)
+  } else if (deletedItems.value.length === 1) {
+    // Only one item, hide after 5 seconds
+    setTimeout(() => {
+      hiddenDeletedIds.value.push(deletedItems.value[0].id)
+    }, 5000)
+  }
+}
+
 </script>
 
 <template>
@@ -117,18 +139,39 @@ import 'primeicons/primeicons.css'
       <!-- trashbin -->
       <draggable 
         v-model="deletedItems"
-        @change="onItemsUpdated"
         group="math"
-        class="font-ubuntu list-none flex flex-col items-center justify-center min-h-16 w-full pt-2 border-2 border-dashed border-red-400 bg-red-50 rounded transition-colors"
+        :animation="200"
+        tag="ul"
+        @drop="isTrashbinActive = false"
+        @start="isDragging=true"
+        @end="isDragging=false"
+        @add="onTrashbinAdd"
+        class="font-ubuntu relative list-none flex flex-col items-center min-h-24 w-full p-2 pt-9 border-2 border-dashed border-red-400 bg-red-50 rounded transition-colors"
         item-key="id">
           <template #item="{element, index}">
-              <div v-show="false" :id="`item-${index}`">{{ index }}</div>
+            <transition name="fade" appear>
+              <li
+                v-show="element?.content && 
+                        deletedItems.length &&
+                        index === deletedItems.length - 1 &&
+                        !hiddenDeletedIds.includes(element.id)"
+                class="w-full"
+              >
+                <ListItem
+                    class="rounded-md cursor-move"
+                    :content="element.content"
+                    :isLast="index === deletedItems.length - 1"
+                    :isFirst="index === 0"                     
+                />
+                </li>
+              </transition>
           </template>
-          <template #footer>
+          <template #header>
             <div
-              class="text-red-400 absolute rounded-full bg-red-50 "
+              class="text-red-400 absolute top-2 -z-0"
             >
-              <i class="pi pi-trash text-2xl"></i>
+              <i class="pi pi-trash text-xl"></i>
+              <p v-if="deletedItems.length==0 || hiddenDeletedIds.includes(deletedItems[deletedItems.length-1].id)" class="text-sm text-red-400 font-bold">Papierkorb</p>
             </div>
           </template>          
       </draggable>
@@ -151,4 +194,10 @@ import 'primeicons/primeicons.css'
     z-index: 40 !important;
     position: relative;
   }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 0.8s;
+  }
+  .fade-enter-from, .fade-leave-to {
+    opacity: 0;
+  }  
 </style>

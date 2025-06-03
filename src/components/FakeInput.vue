@@ -28,8 +28,8 @@ const rendered = computed(() => {
         return value.value // Fallback to original value if cursor is out of bounds
     }
     // Insert cursor span at the current cursor position    
-    chars.splice(cursor.value, 1, '<span class="border-b-4 border-purple-600 text-accent1 animate-pulse inline-block">'+ (value.value[cursor.value] ? value.value[cursor.value] : '&nbsp;') +'</span>')
-    return chars.map((char, index) => '<span class="inline-block">'+ char +'</span>').join('')
+    chars.splice(cursor.value, 1, '<span class="border-b-2 border-purple-600 text-accent1 animate-pulse inline-block text-center">'+ (value.value[cursor.value] ? value.value[cursor.value] : '&nbsp;') +'</span>')
+    return chars.map((char, index) => '<span class="inline-block text-center">'+ char +'</span>').join('')
 })
 
 function sendChar(char) {
