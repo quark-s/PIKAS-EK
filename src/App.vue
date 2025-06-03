@@ -27,7 +27,7 @@ import 'primeicons/primeicons.css'
   let refDebugIbMsg = ref('');
   let isDragging = ref(false);
 
-  let isTrashbinActive = ref(false)
+  let deletedAllowDrop = ref(true)
 
   // Track hidden items by id
   const hiddenDeletedIds = ref([])
@@ -95,17 +95,21 @@ import 'primeicons/primeicons.css'
 
 function onTrashbinAdd(evt) {
   // Move the last added item to the end
+  deletedAllowDrop.value = false; // Prevent further drops before hiding the last item
+  
   if (deletedItems.value.length > 1) {
     const [item] = deletedItems.value.splice(evt.newDraggableIndex, 1)
     deletedItems.value.push(item)
     // Hide after 5 seconds
     setTimeout(() => {
+      deletedAllowDrop.value = true;
       if (!deletedItems.value.includes(item)) return; // Check if item still exists
       hiddenDeletedIds.value.push(item.id)
     }, 7500)
   } else if (deletedItems.value.length === 1) {
     // Only one item, hide after 5 seconds
     setTimeout(() => {
+      deletedAllowDrop.value = true;
       if (!deletedItems.value.length) return; // Check if item still exists
       hiddenDeletedIds.value.push(deletedItems.value[0].id)
     }, 7500)
@@ -141,10 +145,9 @@ function onTrashbinAdd(evt) {
       <!-- trashbin -->
       <draggable 
         v-model="deletedItems"
-        group="math"
+        :group="{ name: 'math', put: deletedAllowDrop, pull: true }"
         :animation="200"
         tag="ul"
-        @drop="isTrashbinActive = false"
         @start="isDragging=true"
         @end="isDragging=false"
         @add="onTrashbinAdd"
