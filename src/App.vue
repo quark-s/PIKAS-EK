@@ -100,13 +100,15 @@ function onTrashbinAdd(evt) {
     deletedItems.value.push(item)
     // Hide after 5 seconds
     setTimeout(() => {
+      if (!deletedItems.value.includes(item)) return; // Check if item still exists
       hiddenDeletedIds.value.push(item.id)
-    }, 5000)
+    }, 7500)
   } else if (deletedItems.value.length === 1) {
     // Only one item, hide after 5 seconds
     setTimeout(() => {
+      if (!deletedItems.value.length) return; // Check if item still exists
       hiddenDeletedIds.value.push(deletedItems.value[0].id)
-    }, 5000)
+    }, 7500)
   }
 }
 
