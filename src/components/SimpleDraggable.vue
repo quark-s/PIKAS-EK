@@ -4,8 +4,8 @@
     import draggable from 'vuedraggable'
     import ListItem from './ListItem.vue';
 
-    const emit = defineEmits(['items-updated', 'item-selected']);
-    defineExpose({addItem, updateItem});
+    const emit = defineEmits(['items-updated', 'toggle-selected']);
+    defineExpose({addItem, updateItem, clearSelected});
 
     const props = defineProps({
         initialItems: {
@@ -19,6 +19,7 @@
     let isDragging = ref(false);
     let elements = ref([]);
     let scrollContainer = ref(null); // Add this line
+    let selectedItem = ref(null);
 
     function normalizeItems(items) {
         return items.map((item, index) => ({
@@ -100,6 +101,13 @@
         let tmp = [...itemsNormalized.value];
         tmp[index].content = content;
         itemsNormalized.value = tmp;
+        clearSelected();
+        nextTick(() => {
+            const itemRef = elements.value[index];
+            if (itemRef) {
+                highlightItem(itemRef);
+            }
+        });
     }
 
     watch(itemsNormalized, (newVal, oldVal) => {
@@ -115,6 +123,21 @@
         // text content should be the same as current `count.value`
         console.log("component mounted");
     })    
+
+    function toggleSelected(element, index) {
+        if (selectedItem.value === element) {
+            selectedItem.value = null; // Deselect if already selected
+            emit('toggle-selected', null, -1);
+        } else {
+            selectedItem.value = element; // Select the item
+            emit('toggle-selected', element, index);
+        }
+    }
+
+    function clearSelected() {
+        selectedItem.value = null;
+        emit('toggle-selected', null, -1);
+    }
 
 </script>
 
@@ -135,8 +158,9 @@
                     <li :id="`item-${element.id}`" :ref="el => elements[index] = el" class="mb-2 cursor-move w-full z-10">
                         <ListItem
                             class="rounded-md"
+                            :active="selectedItem === element"
                             :content="element.content"
-                            @item-selected="$emit('item-selected', element)"
+                            @toggle-selected="toggleSelected(element, index)"
                             :isLast="index === itemsNormalized.length - 1"
                             :isFirst="index === 0"
                         />

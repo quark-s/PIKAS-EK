@@ -8,6 +8,7 @@ import ListItem from './components/ListItem.vue';
 
 import draggable from 'vuedraggable'
 import 'primeicons/primeicons.css'
+import { list } from 'postcss';
 // import TransitionExample from './components/TransitionExample.vue';
 
 
@@ -19,7 +20,7 @@ import 'primeicons/primeicons.css'
 
   const listRef = ref(null)
   // const newItem = ref('')
-  const selectedItem = ref(null)
+  const selectedItemIndex = ref(-1)
   let inputRef = ref('1+2')
   let fakeInputComponent = ref(null)
   let deletedItems = ref([])
@@ -32,20 +33,38 @@ import 'primeicons/primeicons.css'
   // Track hidden items by id
   const hiddenDeletedIds = ref([])
 
-  const addItem = (inputValue) => {
+  const onSaveItem = (inputValue) => {
     if (inputValue.trim() === '') {
       return
     }
-    listRef.value.addItem({ content: inputValue })
+    
+    // Update existing item
+    if (selectedItemIndex.value>=0) {
+      listRef.value.updateItem(selectedItemIndex.value, inputValue)
+      return
+    }
+
+    // Add new item
+    listRef.value.addItem({ content: inputValue })    
   }
 
-  const setSelectedItem = (item) => {
-    selectedItem.value = item
+  const onCancelEdit = () => {
+    listRef.value.clearSelected()
+  }
+
+  const onToggleSelectedItem = (item, idx) => {
+    if (item === null) {
+      selectedItemIndex.value = -1
+      inputRef.value = ''
+      return
+    }
+    selectedItemIndex.value = idx
     inputRef.value = item.content
   }
 
   const onItemsUpdated = (newItems, oldITems) => {
-    console.log('Items updated:', newItems)    
+    console.log('Items updated:', newItems)
+    listRef.value.clearSelected()
   }
 
   const onItemDeleted = ({item}) => {
@@ -96,7 +115,7 @@ import 'primeicons/primeicons.css'
 function onTrashbinAdd(evt) {
   // Move the last added item to the end
   deletedAllowDrop.value = false; // Prevent further drops before hiding the last item
-  
+
   if (deletedItems.value.length > 1) {
     const [item] = deletedItems.value.splice(evt.newDraggableIndex, 1)
     deletedItems.value.push(item)
@@ -126,7 +145,7 @@ function onTrashbinAdd(evt) {
     <div class="min-w-[450px] flex flex-col gap-2">
       <div class="flex gap-2 items-start">
         <div class="max-h-[200px] overflow-y-auto flex-1">
-          <SimpleDraggable :initialItems="initialItems" ref="listRef" @item-selected="setSelectedItem"  @items-updated="onItemsUpdated" @item-deleted="onItemDeleted" class="font-ubuntu" />
+          <SimpleDraggable :initialItems="initialItems" ref="listRef" @toggle-selected="onToggleSelectedItem"  @items-updated="onItemsUpdated" @item-deleted="onItemDeleted" class="font-ubuntu" />
         </div>
         <div v-if="displayMode === 'teacher'" class="flex flex-col flex-1 gap-2 max-h-[200px] overflow-y-auto ">
           <div v-if="!deletedItems.length" class="text-sm text-gray-500 font-bold">Papierkorb ist leer</div>
@@ -140,7 +159,7 @@ function onTrashbinAdd(evt) {
         </div>
       </div>
       <!-- <input v-model="newItem" @keyup.enter="addItem()" placeholder="Add new item" /> -->
-      <FakeInput ref="fakeInputComponent" :content="inputRef" @save="addItem" class="font-ubuntu" />
+      <FakeInput ref="fakeInputComponent" :content="inputRef" @save="onSaveItem" @cancel="onCancelEdit" :edit="selectedItemIndex>=0" class="font-ubuntu" />
 
       <!-- trashbin -->
       <draggable 

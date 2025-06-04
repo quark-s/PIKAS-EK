@@ -5,9 +5,13 @@ const props = defineProps({
     content: {
         type: String,
         default: '1+1'
+    },
+    edit: {
+        type: Boolean,
+        default: false
     }
 })
-const emit = defineEmits(['save', 'update:content'])
+const emit = defineEmits(['save', 'cancel'])
 
 // Internal state
 const value = ref(props.content)
@@ -41,7 +45,7 @@ function sendChar(char) {
     }
     value.value = arr.join('')
     cursor.value = Math.min(cursor.value + 1, value.value.length)
-    emit('update:content', value.value)
+    // emit('update:content', value.value)
 }
 
 function moveCursorNext() {
@@ -64,24 +68,41 @@ function backspace() {
         }
         value.value = arr.join('')
         cursor.value--
-        emit('update:content', value.value)
+        // emit('update:content', value.value)
     }
+}
+
+function clearInput() {
+    value.value = ''
+    cursor.value = 0
+    // emit('update:content', value.value)
 }
 
 function save() {
     emit('save', value.value)
+    clearInput()
 }
 
-defineExpose({ sendChar, moveCursorNext, moveCursorPrev, backspace })
+defineExpose({ sendChar, moveCursorNext, moveCursorPrev, backspace, clear: clearInput })
 </script>
 
 <template>
-  <div class="bg-accent1-lighter rounded-md p-2 border-2 border-accent1 min-h-12 flex items-center">
+  <div class="bg-gray-200 rounded-md p-2 border-2 border-accent1 min-h-12 flex items-center">
     <div class="flex-1 font-bold text-left select-none">
       <span v-html="rendered" />
     </div>
-    <button @click="save" :disabled="value.length<3" class="rounded-full bg-accent1 text-white h-6 w-6 flex items-center justify-center cursor-pointer text-center pt-1 pr-1 rotate-45 disabled:opacity-50 disabled:cursor-not-allowed tracking-normal" type="button">
-      <i class="pi pi-send text-sm"></i>
-    </button>
+    <div v-if="!edit">
+        <button @click="save" :disabled="value.length<3" class="rounded-full bg-accent1 text-white h-6 w-6 flex items-center justify-center cursor-pointer text-center pt-1 pr-1 rotate-45 disabled:opacity-50 disabled:cursor-not-allowed tracking-normal" type="button">
+          <i class="pi pi-send text-sm"></i>
+        </button>
+    </div>
+    <div v-else class="flex items-center gap-x-2">
+      <button @click="save" :disabled="value.length<3" type="button" class="bg-transparent text-accent1 hover:text-orange-500 disabled:hover:text-accent1 disabled:cursor-not-allowed disabled:text-gray-400">
+        <i class="pi pi-check font-bold text-base"></i>
+      </button>
+      <button @click="$emit('cancel')" type="button" class="bg-transparent text-accent1 hover:text-orange-500 disabled:hover:text-accent1 disabled:cursor-not-allowed disabled:text-gray-400">
+        <i class="pi pi-times font-bold text-base"></i>
+      </button>
+    </div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <script setup>
 
-  defineEmits(['moveUp', 'moveDown', 'delete', 'item-selected'])
+  defineEmits(['moveUp', 'moveDown', 'delete', 'toggle-selected'])
 
   defineProps({
     content: String,
@@ -8,16 +8,21 @@
     isMovable: [Boolean, String],
     isLast: [Boolean, String],
     isFirst: [Boolean, String],
+    active: [Boolean, String]
   })
 
 </script>
 
 <template>
   <div
-    @click="$emit('item-selected')"
+    @click="$emit('toggle-selected')"
+    style="box-sizing: border-box"
     :class="[
-      'flex items-center p-2 bg-accent1-lighter',
-      { 'cursor-move': isMovable }
+      'flex items-center p-2 bg-accent1-lighter border-2',
+      { 'cursor-move': isMovable },
+      { 'bg-accent1': active },
+      { 'border-accent1': active },
+      { 'border-transparent': !active }
     ]"
   >
     <div class="flex-1 text-left font-bold">
