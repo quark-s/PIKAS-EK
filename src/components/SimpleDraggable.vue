@@ -59,10 +59,10 @@
             else if(!Array.isArray(result.json) || result.json.length === 0) {
                 return INVALID_SYNTAX;
             }
-            else if(result.evaluate().json === "False"){
+            else if(result.value === false){
                 return INCORRECT_RESULT;
             }
-            else if(result.evaluate().json === "True"){
+            else if(result.value === true){
                 return CORRECT_RESULT;
             }
             else {
@@ -226,7 +226,6 @@
                                 element.evaluated === 1 ? 'MISSING_RESULT' :
                                 element.evaluated === 2 ? 'INCORRECT_RESULT' :
                                 element.evaluated === 3 ? 'CORRECT_RESULT' : '' }}
-                            {{ element.evaluated }}
                         </div>
                         <!-- <span class="transition-colors, duration-500, bg-red-200">test</span> -->
                     </li>
