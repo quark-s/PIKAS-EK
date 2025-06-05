@@ -171,7 +171,7 @@ function onTrashbinAdd(evt) {
         @start="isDragging=true"
         @end="isDragging=false"
         @add="onTrashbinAdd"
-        class="font-ubuntu relative list-none flex flex-col items-center min-h-24 w-full p-2 pt-9 border-2 border-dashed border-red-400 bg-red-50 rounded transition-colors"
+        class="font-ubuntu relative list-none flex flex-col items-center min-h-24 w-full p-2 pt-8 border-2 border-dashed border-red-400 bg-red-50 rounded transition-colors"
         item-key="id">
           <template #item="{element, index}">
             <transition name="fade" appear>
@@ -193,7 +193,7 @@ function onTrashbinAdd(evt) {
           </template>
           <template #header>
             <div
-              class="text-red-400 absolute top-2 -z-0"
+              class="text-red-400 absolute top-1 -z-0"
             >
               <i class="pi pi-trash text-xl"></i>
               <p v-if="deletedItems.length==0 || hiddenDeletedIds.includes(deletedItems[deletedItems.length-1].id)" class="text-sm text-red-400 font-bold">Papierkorb</p>
