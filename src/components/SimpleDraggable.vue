@@ -3,6 +3,7 @@
     import { ref, watch, onMounted, onUpdated, nextTick } from 'vue';
     import draggable from 'vuedraggable'
     import ListItem from './ListItem.vue';
+    import { ComputeEngine } from "@cortex-js/compute-engine";
 
     const emit = defineEmits(['items-updated', 'toggle-selected']);
     defineExpose({addItem, updateItem, clearSelected});
@@ -12,7 +13,25 @@
             type: Array,
             default: () => []
         },
+        compute: {
+            type: Boolean,
+            default: false
+        }
     })
+
+    const evauluationResult = {
+        'NO_CALCULATION': -1,
+        'INVALID_SYNTAX': 0,
+        'MISSING_RESULT': 1,
+        'INCORRECT_RESULT': 2,
+        'CORRECT_RESULT': 3
+    }
+    const { NO_CALCULATION, INVALID_SYNTAX, MISSING_RESULT, INCORRECT_RESULT, CORRECT_RESULT } = evauluationResult;
+
+    let ce = null;
+    if (props.compute) {
+        ce = new ComputeEngine();
+    }
 
     let itemsNormalized = ref(normalizeItems(props.initialItems));
     let initialCount = ref(itemsNormalized.value.length);
@@ -24,8 +43,36 @@
     function normalizeItems(items) {
         return items.map((item, index) => ({
             ...item,
-            id: !item.id ? index + 1 : item.id
+            id: !item.id ? index + 1 : item.id,
+            evaluated: evaluateExpression(item.content || '')
         }));
+    }
+
+    function evaluateExpression(expression) {
+        if (!ce) return NO_CALCULATION;
+        try {
+            const result = ce.parse(expression);
+            if(result.errors.length > 0) {
+                // console.error('Parse errors:', result.errors);
+                return INVALID_SYNTAX;
+            }
+            else if(!Array.isArray(result.json) || result.json.length === 0) {
+                return INVALID_SYNTAX;
+            }
+            else if(result.evaluate().json === "False"){
+                return INCORRECT_RESULT;
+            }
+            else if(result.evaluate().json === "True"){
+                return CORRECT_RESULT;
+            }
+            else {
+                return MISSING_RESULT;
+            }
+            
+        } catch (e) {
+            console.error('Evaluation error:', e);
+            return INVALID_SYNTAX;
+        }
     }
 
     function logEvent(e){
@@ -41,7 +88,6 @@
             tmp.splice(index + 1, 0, item)
             itemsNormalized.value = tmp;
         }
-        normalizeItems(itemsNormalized.value)
     }
     function moveUp(index){
         logEvent('move-up' + index)
@@ -86,8 +132,11 @@
             return; // Do not add the item if it already exists
         }
 
-        tmp.push({ ...item, id: initialCount.value + 1 })
         initialCount.value += 1;
+        tmp.push({ ...item, 
+            id: initialCount.value,
+            evaluated: evaluateExpression(item.content || '')
+        })
         itemsNormalized.value = tmp;
         nextTick(() => {
             const lastEl = elements.value[elements.value.length - 1];
@@ -100,6 +149,7 @@
         logEvent('update: '+index+content)
         let tmp = [...itemsNormalized.value];
         tmp[index].content = content;
+        tmp[index].evaluated = evaluateExpression(content || '');
         itemsNormalized.value = tmp;
         clearSelected();
         nextTick(() => {
@@ -155,15 +205,29 @@
             ghost-class="ghost"
             item-key="id">
                 <template #item="{element, index}">
-                    <li :id="`item-${element.id}`" :ref="el => elements[index] = el" class="mb-2 cursor-move w-full z-10">
+                    <li :id="`item-${element.id}`" :ref="el => elements[index] = el" class="mb-2 cursor-move w-full z-10 relative">
                         <ListItem
-                            class="rounded-md"
+                            class="rounded-md flex-1"
                             :active="selectedItem === element"
                             :content="element.content"
                             @toggle-selected="toggleSelected(element, index)"
                             :isLast="index === itemsNormalized.length - 1"
                             :isFirst="index === 0"
                         />
+                        <div class="absolute top-1 right-1 rounded-md bg-gray-200 p-1 text-xs font-bold text-gray-600"
+                            :class="{
+                                'bg-red-200': element.evaluated === INVALID_SYNTAX,
+                                'bg-yellow-200': element.evaluated === MISSING_RESULT,
+                                'bg-green-200': element.evaluated === CORRECT_RESULT,
+                                'bg-orange-200': element.evaluated === INCORRECT_RESULT
+                            }">
+                            {{ element.evaluated === -1 ? 'NO_CALCULATION' :
+                                element.evaluated === 0 ? 'INVALID_SYNTAX' :
+                                element.evaluated === 1 ? 'MISSING_RESULT' :
+                                element.evaluated === 2 ? 'INCORRECT_RESULT' :
+                                element.evaluated === 3 ? 'CORRECT_RESULT' : '' }}
+                            {{ element.evaluated }}
+                        </div>
                         <!-- <span class="transition-colors, duration-500, bg-red-200">test</span> -->
                     </li>
                 </template>

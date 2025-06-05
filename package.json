@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cortex-js/compute-engine": "^0.29.1",
     "primeicons": "^7.0.0",
     "vue": "^3.5.13",
     "vuedraggable": "^4.1.0"
